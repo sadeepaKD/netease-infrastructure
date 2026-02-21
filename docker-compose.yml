@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # NetEASE Database (MariaDB)
+  # Stores user credentials and accounting logs
+  netease-db:
+    image: mariadb:10.6
+    container_name: netease-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_123
+      MYSQL_DATABASE: radius
+      MYSQL_USER: radius
+      MYSQL_PASSWORD: radius_password_123
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+
+  # NetEASE AAA Engine (FreeRADIUS)
+  # Handles authentication requests from the Lab Switch
+  netease-radius:
+    image: freeradius/freeradius-server:latest
+    container_name: netease-radius
+    restart: always
+    depends_on:
+      - netease-db
+    ports:
+      - "1812:1812/udp" # Authentication Port
+      - "1813:1813/udp" # Accounting Port
+    volumes:
+      - ./radius-config:/etc/freeradius/3.0
