@@ -29,7 +29,16 @@ services:
       - "0.0.0.0:1812:1812/udp"
       - "0.0.0.0:1813:1813/udp"
     volumes:
-      - ./radius-config:/etc/freeradius/3.0
+      # Mount only our custom files into the correct container config root (/etc/freeradius/)
+      # This preserves the container's built-in modules (eap, unix, realm, etc.)
+      - ./radius-config/clients.conf:/etc/freeradius/clients.conf
+      - ./radius-config/mods-available/sql:/etc/freeradius/mods-available/sql
+      # Mount sql module directly into mods-enabled (avoids symlink issues)
+      - ./radius-config/mods-available/sql:/etc/freeradius/mods-enabled/sql
+      # Override the default virtual server with our SQL-enabled version
+      - ./radius-config/sites-available/default:/etc/freeradius/sites-available/default
+      # Mount SQL queries config directory
+      - ./radius-config/mods-config/sql:/etc/freeradius/mods-config/sql
 
 volumes:
   mysql-data:
