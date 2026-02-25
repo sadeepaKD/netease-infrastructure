@@ -1,0 +1,5 @@
+# dictionary - Local dictionary definitions
+# NetEASE Infrastructure
+#
+# Include the default FreeRADIUS dictionaries
+$INCLUDE /usr/share/freeradius/dictionary

@@ -1,0 +1,4 @@
+# attr_filter/access_reject
+# Filter attributes sent back in Access-Reject responses
+DEFAULT
+	Reply-Message =* ANY

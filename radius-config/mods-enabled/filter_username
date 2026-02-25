@@ -1,0 +1,5 @@
+# filter_username - Reject malformed usernames
+filter_username {
+    safe_characters = ""
+    reject_filter = false
+}

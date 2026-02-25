@@ -1,0 +1,12 @@
+# attr_filter - Filters attributes in various stages
+# Access-Reject filter
+attr_filter attr_filter.access_reject {
+    key = "%{User-Name}"
+    filename = ${modconfdir}/attr_filter/access_reject
+}
+
+# Accounting response filter
+attr_filter attr_filter.accounting_response {
+    key = "%{User-Name}"
+    filename = ${modconfdir}/attr_filter/accounting_response
+}

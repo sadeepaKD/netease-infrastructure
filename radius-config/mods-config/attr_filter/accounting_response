@@ -1,0 +1,4 @@
+# attr_filter/accounting_response
+# Filter attributes sent back in Accounting-Response
+DEFAULT
+	User-Name =* ANY

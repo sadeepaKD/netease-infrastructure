@@ -1,0 +1,64 @@
+# sites-available/default - Default Virtual Server
+# NetEASE Infrastructure
+# Handles standard RADIUS authentication and accounting with SQL backend
+
+server default {
+    listen {
+        type = auth
+        ipaddr = *
+        port = 0
+        limit {
+            max_connections = 16
+            lifetime = 0
+            idle_timeout = 30
+        }
+    }
+
+    listen {
+        type = acct
+        ipaddr = *
+        port = 0
+        limit {
+        }
+    }
+
+    authorize {
+        filter_username
+        preprocess
+        sql
+        pap
+    }
+
+    authenticate {
+        Auth-Type PAP {
+            pap
+        }
+        Auth-Type CHAP {
+            chap
+        }
+        Auth-Type MS-CHAP {
+            mschap
+        }
+    }
+
+    preacct {
+        preprocess
+        acct_unique
+    }
+
+    accounting {
+        sql
+    }
+
+    session {
+        sql
+    }
+
+    post-auth {
+        sql
+        Post-Auth-Type REJECT {
+            sql
+            attr_filter.access_reject
+        }
+    }
+}

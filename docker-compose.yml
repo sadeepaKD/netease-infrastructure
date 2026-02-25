@@ -1,8 +1,5 @@
 version: '3.8'
-
 services:
-  # NetEASE Database (MariaDB)
-  # Stores user credentials and accounting logs
   netease-db:
     image: mariadb:10.6
     container_name: netease-db
@@ -13,18 +10,26 @@ services:
       MYSQL_USER: radius
       MYSQL_PASSWORD: radius_password_123
     volumes:
-      - ./mysql-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
+      - ./radius-config/mods-config/sql/main/mysql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  # NetEASE AAA Engine (FreeRADIUS)
-  # Handles authentication requests from the Lab Switch
   netease-radius:
     image: freeradius/freeradius-server:latest
     container_name: netease-radius
     restart: always
     depends_on:
-      - netease-db
+      netease-db:
+        condition: service_healthy
     ports:
-      - "1812:1812/udp" # Authentication Port
-      - "1813:1813/udp" # Accounting Port
+      - "0.0.0.0:1812:1812/udp"
+      - "0.0.0.0:1813:1813/udp"
     volumes:
       - ./radius-config:/etc/freeradius/3.0
+
+volumes:
+  mysql-data:
